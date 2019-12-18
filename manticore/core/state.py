@@ -84,6 +84,7 @@ class StateBase(Eventful):
         self._platform.constraints = constraints
         self._input_symbols = list()
         self._child = None
+        self._parent_state_id = None
         self._context = dict()
         self._terminated_by = None
         # 33
@@ -96,6 +97,7 @@ class StateBase(Eventful):
         state["constraints"] = self._constraints
         state["input_symbols"] = self._input_symbols
         state["child"] = self._child
+        state["parent_state_id"] = self._parent_state_id
         state["context"] = self._context
         state["terminated_by"] = self._terminated_by
         return state
@@ -106,6 +108,7 @@ class StateBase(Eventful):
         self._constraints = state["constraints"]
         self._input_symbols = state["input_symbols"]
         self._child = state["child"]
+        self._parent_state_id = state["parent_state_id"]
         self._context = state["context"]
         self._terminated_by = state["terminated_by"]
         # 33
@@ -128,6 +131,7 @@ class StateBase(Eventful):
         self.platform.constraints = new_state.constraints
         new_state._input_symbols = list(self._input_symbols)
         new_state._context = copy.copy(self._context)
+        new_state._parent_state_id = self.id
         new_state._id = None
         self.copy_eventful_state(new_state)
 
@@ -161,6 +165,14 @@ class StateBase(Eventful):
     def constraints(self, constraints):
         self._constraints = constraints
         self.platform.constraints = constraints
+
+    @property
+    def parent_state_id(self):
+        return self._parent_state_id
+
+    @parent_state_id.setter
+    def parent_state_id(self, parent_state_id):
+        self._parent_state_id = parent_state_id
 
     def execute(self):
         raise NotImplementedError
